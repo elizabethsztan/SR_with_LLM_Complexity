@@ -1,8 +1,12 @@
+module Tools
+
 using SymbolicRegression
 using SymbolicRegression.PopMemberModule: PopMember
 using SymbolicRegression.ComplexityModule: compute_complexity
 using DynamicExpressions: Node, string_tree, get_operators
 using SymbolicRegression.InterfaceDynamicExpressionsModule: string_variable, string_variable_raw
+
+export string_tree_llm
 
 # ============================================================
 # Extended string_tree function with LLM_input option
@@ -36,3 +40,5 @@ function string_tree_llm(tree, options; variable_names=nothing)
             variable_names=variable_names,
         )
 end
+
+end # module Tools
