@@ -5,21 +5,27 @@ Extends SymbolicRegression.jl's Complexity module.
 """
 module LLMComplexity
 
+# Opt-out of precompilation to allow method overwriting
+__precompile__(false)
+
 using SymbolicRegression
+using SymbolicRegression: AbstractOptions, AbstractExpression
 using DynamicExpressions
 using PromptingTools
 using PromptingTools: SystemMessage, UserMessage, aigenerate, CustomOpenAISchema
 
 # Import your own string_tree_llm function
-include("tools.jl")
+include("Tools.jl")
 using .Tools: string_tree_llm
 
-# Import to extend (use `import` not `using` when you want to add methods)
-import SymbolicRegression: compute_complexity
+# Import to override (use `import` not `using` when you want to add methods)
+import SymbolicRegression.ComplexityModule: compute_complexity
 
-function evaluate_expression(expression::AbstractExpression, options::AbstractOptions; user_examples::String="")
+function evaluate_expression(expression_tree::AbstractExpression, options::AbstractOptions; user_examples::String="")
 
-    expression_string = string_tree_llm(expression.tree, options)
+    expression_string = string_tree_llm(expression_tree, options)
+
+    println("Expression string: $expression_string")
 
     examples = user_examples != "" ? user_examples : "x1 + x2 + C has complexity 3, C * sin(x1) has complexity 4, sin(sin(sin(x1))) has complexity 10"
 
@@ -43,7 +49,7 @@ function evaluate_expression(expression::AbstractExpression, options::AbstractOp
 
     output = response.content
     complexity = parse(Int64, output)
-    println(typeof(Int(complexity)))
+    println("Complexity: $complexity")
 
     return complexity
 end
