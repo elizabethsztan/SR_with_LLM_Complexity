@@ -7,11 +7,13 @@ authors = ["Liz Tan <eszt2@cam.ac.uk>"]
 DynamicExpressions = "a40a106e-89c9-4ca8-8020-a735e8728b6b"
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 PromptingTools = "670122d1-24a8-4d70-bfce-740807c42192"
+Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 SymbolicRegression = "8254be44-1295-4e6a-a16d-46603ac705cb"
 
 [compat]
 DynamicExpressions = "1"
 JSON = "1.2.0"
 PromptingTools = "0.83.0"
+Reexport = "1"
 SymbolicRegression = "1"
 julia = "1.10"
