@@ -3,3 +3,6 @@ llamafiles/
 llama.log
 
 Manifest.toml
+
+#testing
+outputs/
