@@ -18,16 +18,20 @@ using PromptingTools: SystemMessage, UserMessage, aigenerate, CustomOpenAISchema
 include("Tools.jl")
 using .Tools: string_tree_llm
 
-# Import to override (use `import` not `using` when you want to add methods)
+# Import to extend (use `import` not `using` when you want to add methods)
 import SymbolicRegression.ComplexityModule: compute_complexity
 
-function evaluate_expression(expression_tree::AbstractExpression, options::AbstractOptions; user_examples::String="")
+# Import our ComplexityOptions type
+using ..LLMComplexityOptionsStructModule: ComplexityOptions
+
+function compute_llm_complexity(expression_tree::AbstractExpression, options)
 
     expression_string = string_tree_llm(expression_tree, options)
 
-    println("Expression string: $expression_string")
+    # println("Expression string: $expression_string (tree object_id: ", objectid(expression_tree), ")")
 
-    examples = user_examples != "" ? user_examples : "x1 + x2 + C has complexity 3, C * sin(x1) has complexity 4, sin(sin(sin(x1))) has complexity 10"
+    # Get examples from options (always available via ComplexityOptions)
+    examples = options.user_examples
 
     constraints = "All constants are represented with the symbol C."
 
@@ -36,7 +40,6 @@ function evaluate_expression(expression_tree::AbstractExpression, options::Abstr
     user_msg = UserMessage("Provide an integer value for the complexity of the following expression: $expression_string. $constraints.")
 
     conversation = [system_msg, user_msg]
-
 
     response = aigenerate(
         CustomOpenAISchema(),
@@ -55,13 +58,22 @@ function evaluate_expression(expression_tree::AbstractExpression, options::Abstr
 end
 
 
-#pass in a PopMember 
+# Extend compute_complexity with a NEW METHOD specifically for ComplexityOptions
+# This uses Julia's multiple dispatch - it won't override the original method
 function compute_complexity(
-    tree::AbstractExpression, options::AbstractOptions; break_sharing=Val(false)
+    tree::AbstractExpression,
+    options::ComplexityOptions;  # Note: ComplexityOptions, not AbstractOptions
+    break_sharing=Val(false)
 )
-
-    complexity = evaluate_expression(tree, options)
-    return complexity
+    if options.use_llm_complexity
+        # Use LLM-based complexity evaluation
+        return compute_llm_complexity(tree, options)
+    else
+        # Call the original compute_complexity by passing options.sr_options (type Options)
+        # Julia will dispatch to the original SymbolicRegression method because
+        # options.sr_options is type Options, not ComplexityOptions
+        return compute_complexity(tree, options.sr_options; break_sharing=break_sharing)
+    end
 end
 
 end
