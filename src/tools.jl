@@ -8,10 +8,6 @@ using SymbolicRegression.InterfaceDynamicExpressionsModule: string_variable, str
 
 export string_tree_llm
 
-# ============================================================
-# Extended string_tree function with LLM_input option
-# ============================================================
-
 """
     string_tree_llm(tree, options; pretty=false, variable_names=nothing)
 
