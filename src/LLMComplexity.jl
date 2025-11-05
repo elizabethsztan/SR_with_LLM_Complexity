@@ -52,14 +52,12 @@ function compute_llm_complexity(expression_tree::AbstractExpression, options)
 
     output = response.content
     complexity = parse(Int64, output)
-    println("Complexity: $complexity")
+    # println("Complexity: $complexity")
 
     return complexity
 end
 
-
-# Extend compute_complexity with a NEW METHOD specifically for ComplexityOptions
-# This uses Julia's multiple dispatch - it won't override the original method
+# Extends original compute_complexity
 function compute_complexity(
     tree::AbstractExpression,
     options::ComplexityOptions;  # Note: ComplexityOptions, not AbstractOptions
