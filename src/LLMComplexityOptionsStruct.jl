@@ -13,7 +13,12 @@ export LLMComplexityOptions, ComplexityOptions, LLM_COMPLEXITY_OPTIONS_KEYS
 Base.@kwdef mutable struct LLMComplexityOptions
     # LLM Evaluation Control
     use_llm_complexity::Bool = false
-    user_examples::String = "x1 + x2 + C has complexity 3, C * sin(x1) has complexity 4, sin(sin(sin(x1))) has complexity 10"
+    user_examples::String = "x1 + x2 + C has complexity 3, C * sin(x1) has complexity 4, sin(exp(sin(x1))) has complexity 10"
+
+    # Logging options
+    log_complexity_outputs::Bool = false
+    log_llm_file_path::String = "llm_complexity_log.json"
+    log_standard_file_path::String = "standard_complexity_log.json"
 end
 
 const LLM_COMPLEXITY_OPTIONS_KEYS = fieldnames(LLMComplexityOptions)

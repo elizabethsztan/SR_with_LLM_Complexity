@@ -11,6 +11,7 @@ using SymbolicRegression: Options
 using ..LLMComplexityOptionsStructModule:
     LLMComplexityOptions, LLM_COMPLEXITY_OPTIONS_KEYS
 import ..LLMComplexityOptionsStructModule: ComplexityOptions
+using ..LLMComplexity: initialize_log
 
 export ComplexityOptions
 
@@ -47,14 +48,29 @@ function ComplexityOptions(;
     # LLM Complexity specific options
     use_llm_complexity::Bool=false,
     user_examples::String=LLMComplexityOptions().user_examples,  # Use default from struct
+    log_complexity_outputs::Bool=false,
+    log_llm_file_path::String=LLMComplexityOptions().log_llm_file_path,
+    log_standard_file_path::String=LLMComplexityOptions().log_standard_file_path,
     # All other kwargs go to SymbolicRegression.Options
     kws...
 )
     # Create LLM complexity options
     llm_complexity_options = LLMComplexityOptions(
         use_llm_complexity=use_llm_complexity,
-        user_examples=user_examples
+        user_examples=user_examples,
+        log_complexity_outputs=log_complexity_outputs,
+        log_llm_file_path=log_llm_file_path,
+        log_standard_file_path=log_standard_file_path
     )
+
+    # Initialize log files if logging is enabled
+    if log_complexity_outputs
+        if use_llm_complexity
+            initialize_log(log_llm_file_path)
+        else
+            initialize_log(log_standard_file_path)
+        end
+    end
 
     # Create SymbolicRegression options (pass all remaining kwargs)
     sr_options = Options(; kws...)
