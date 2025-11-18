@@ -13,6 +13,7 @@ using SymbolicRegression: AbstractOptions, AbstractExpression
 using DynamicExpressions
 using PromptingTools
 using PromptingTools: SystemMessage, UserMessage, aigenerate, CustomOpenAISchema
+using JSON3
 
 # Import your own string_tree_llm function
 include("Tools.jl")
@@ -23,6 +24,43 @@ import SymbolicRegression.ComplexityModule: compute_complexity
 
 # Import our ComplexityOptions type
 using ..LLMComplexityOptionsStructModule: ComplexityOptions
+
+"""
+    initialize_log(log_file_path::String)
+
+Creates or overwrites a log file with an empty JSON array.
+"""
+function initialize_log(log_file_path::String)
+    open(log_file_path, "w") do io
+        JSON3.write(io, Int[])
+    end
+end
+
+"""
+    log_complexity(complexity::Int, log_file_path::String)
+
+Appends a complexity value to a JSON array file.
+"""
+function log_complexity(complexity::Int, log_file_path::String)
+    # Read existing log or create new array
+    complexities = if isfile(log_file_path)
+        try
+            JSON3.read(read(log_file_path, String), Vector{Int})
+        catch
+            Int[]
+        end
+    else
+        Int[]
+    end
+
+    # Append new complexity
+    push!(complexities, complexity)
+
+    # Write back to file
+    open(log_file_path, "w") do io
+        JSON3.write(io, complexities)
+    end
+end
 
 function compute_llm_complexity(expression_tree::AbstractExpression, options)
 
@@ -35,11 +73,29 @@ function compute_llm_complexity(expression_tree::AbstractExpression, options)
 
     constraints = "All constants are represented with the symbol C."
 
-    system_msg = SystemMessage("You are a helpful assistant that assigns complexity values to mathematical expressions depending on how human-interpretable they are. Higher scores indicate higher complexities and lower interpretability. Example mappings include $examples. Your only output should be the complexity value.")
+    system_msg = SystemMessage("You are a helpful assistant that assigns complexity values to mathematical expressions depending on how human-interpretable they are. Higher scores indicate higher complexities and lower interpretability. Example mappings include $examples. Your output should be the complexity value ONLY. DO NOT output anything except an integer complexity value.")
 
     user_msg = UserMessage("Provide an integer value for the complexity of the following expression: $expression_string. $constraints.")
 
     conversation = [system_msg, user_msg]
+
+
+    # Use gpt-5
+
+    # response = aigenerate(
+    #     CustomOpenAISchema(),
+    #     conversation;
+    #     api_key="local-server",
+    #     model="gpt-5",
+    #     api_kwargs=(url="http://127.0.0.1:8000/v1", max_tokens=200, temperature = 0.0),
+    #     http_kwargs=(retries=3, readtimeout=60)
+    # )
+
+    # output = response.content
+    # complexity = parse(Int64, output)
+
+
+    # Use Qwen2.5-0.5B-Instruct
 
     response = aigenerate(
         CustomOpenAISchema(),
@@ -52,6 +108,12 @@ function compute_llm_complexity(expression_tree::AbstractExpression, options)
 
     output = response.content
     complexity = parse(Int64, output)
+
+    # Log complexity if enabled
+    if options.log_complexity_outputs
+        log_complexity(complexity, options.log_llm_file_path)
+    end
+
     # println("Complexity: $complexity")
 
     return complexity
@@ -70,7 +132,14 @@ function compute_complexity(
         # Call the original compute_complexity by passing options.sr_options (type Options)
         # Julia will dispatch to the original SymbolicRegression method because
         # options.sr_options is type Options, not ComplexityOptions
-        return compute_complexity(tree, options.sr_options; break_sharing=break_sharing)
+        complexity = compute_complexity(tree, options.sr_options; break_sharing=break_sharing)
+
+        # Log standard complexity if enabled
+        if options.log_complexity_outputs
+            log_complexity(complexity, options.log_standard_file_path)
+        end
+
+        return complexity
     end
 end
 
