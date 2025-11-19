@@ -29,8 +29,15 @@ using ..LLMComplexityOptionsStructModule: ComplexityOptions
     initialize_log(log_file_path::String)
 
 Creates or overwrites a log file with an empty JSON array.
+Creates parent directories if they don't exist.
 """
 function initialize_log(log_file_path::String)
+    # Create parent directory if it doesn't exist
+    dir = dirname(log_file_path)
+    if !isempty(dir)
+        mkpath(dir)
+    end
+
     open(log_file_path, "w") do io
         JSON3.write(io, Int[])
     end
