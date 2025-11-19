@@ -8,20 +8,22 @@ using Reexport
 # Import the specific function we want to override
 import SymbolicRegression.ComplexityModule: compute_complexity
 
-# Include options modules first (order matters!)
-include("LLMComplexityOptionsStruct.jl")
-using .LLMComplexityOptionsStructModule
-
-include("LLMComplexityOptions.jl")
-using .LLMComplexityOptionsModule
-
-# Include other modules
+# Include modules in dependency order (order matters!)
+# 1. Tools module (no dependencies)
 include("Tools.jl")
 using .Tools
 
-# Include our custom complexity module
+# 2. Options struct (no dependencies)
+include("LLMComplexityOptionsStruct.jl")
+using .LLMComplexityOptionsStructModule
+
+# 3. LLMComplexity module (depends on Tools)
 include("LLMComplexity.jl")
 using .LLMComplexity: compute_complexity  # Use our overridden version
+
+# 4. Options constructor (depends on LLMComplexity for initialize_log)
+include("LLMComplexityOptions.jl")
+using .LLMComplexityOptionsModule: ComplexityOptions
 
 # Export additional functionality
 export string_tree_llm
