@@ -11,6 +11,5 @@ src/retirees/
 # HPC logs
 logs
 
-scraps/
-
 CLAUDE.md
+scraps/
