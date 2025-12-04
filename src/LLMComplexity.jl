@@ -15,6 +15,9 @@ using PromptingTools
 using PromptingTools: SystemMessage, UserMessage, aigenerate, CustomOpenAISchema
 using JSON3
 
+# Global lock for thread-safe logging
+const LOG_LOCK = ReentrantLock()
+
 # Import your own string_tree_llm function
 include("Tools.jl")
 using .Tools: string_tree_llm
@@ -28,7 +31,8 @@ using ..LLMComplexityOptionsStructModule: ComplexityOptions
 """
     initialize_log(log_file_path::String)
 
-Creates or overwrites a log file with an empty JSON array.
+Creates a log file with an empty JSON array if it doesn't exist.
+If it exists, does nothing (preserves existing data).
 Creates parent directories if they don't exist.
 """
 function initialize_log(log_file_path::String)
@@ -38,34 +42,30 @@ function initialize_log(log_file_path::String)
         mkpath(dir)
     end
 
-    open(log_file_path, "w") do io
-        JSON3.write(io, Int[])
+    # Only create file if it doesn't exist
+    if !isfile(log_file_path)
+        open(log_file_path, "w") do io
+            JSON3.write(io, Int[])
+        end
     end
 end
 
 """
     log_complexity(complexity::Int, log_file_path::String)
 
-Appends a complexity value to a JSON array file.
+Appends a complexity value to a JSON array file in a thread-safe manner.
+Assumes the log file has been initialized with initialize_log().
 """
 function log_complexity(complexity::Int, log_file_path::String)
-    # Read existing log or create new array
-    complexities = if isfile(log_file_path)
-        try
-            JSON3.read(read(log_file_path, String), Vector{Int})
-        catch
-            Int[]
+    lock(LOG_LOCK) do
+        # Read existing log (file must be initialized first)
+        complexities = JSON3.read(read(log_file_path, String), Vector{Int})
+
+        # Append new complexity and write back
+        push!(complexities, complexity)
+        open(log_file_path, "w") do io
+            JSON3.write(io, complexities)
         end
-    else
-        Int[]
-    end
-
-    # Append new complexity
-    push!(complexities, complexity)
-
-    # Write back to file
-    open(log_file_path, "w") do io
-        JSON3.write(io, complexities)
     end
 end
 
@@ -103,6 +103,16 @@ function compute_llm_complexity(expression_tree::AbstractExpression, options)
 
 
     # Use Qwen2.5-0.5B-Instruct
+
+    # response = aigenerate(
+    #     CustomOpenAISchema(),
+    #     conversation;
+    #     api_key="local-server",
+    #     model="qwen3-coder-30b-a3b-instruct",
+    #     api_kwargs=(url="http://localhost:11449/v1", max_tokens=200, temperature = 0.0),
+    #     http_kwargs=(retries=3, readtimeout=60)
+    # )
+
 
     response = aigenerate(
         CustomOpenAISchema(),
