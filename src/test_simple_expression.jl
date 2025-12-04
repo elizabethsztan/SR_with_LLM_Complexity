@@ -2,9 +2,12 @@ using SR_with_LLM_Complexity
 using BenchmarkTools
 using Logging
 using JSON
+using Dates
 
 # Suppress PromptingTools logging (token counts, etc.)
 Logging.disable_logging(Logging.Info)
+
+timestamp = Int(floor(Dates.datetime2unix(now())))
 
 """
     write_results_to_json(filepath, t1, t2, num_populations, num_members_per_population, num_iterations)
@@ -54,7 +57,7 @@ y = X[1, :] .^ 2 .+ 2 .* X[2, :] .+ 4.5 # y = x1^2 + 2*x2 + 4.5
 
 num_populations = 1
 num_members_per_population = 20
-num_iterations = 3
+num_iterations = 10
 
 # Test 1: Using ComplexityOptions WITHOUT LLM complexity (should use default)
 println("Test 1: ComplexityOptions with LLM disabled")
@@ -66,7 +69,7 @@ options1 = ComplexityOptions(
     populations=num_populations,
     population_size=num_members_per_population, 
     log_complexity_outputs=true, 
-    log_standard_file_path="experimental_results/simple_expression/standard_complexity_log.json"
+    log_standard_file_path="experimental_results/simple_expression/standard_complexity_log_$(timestamp).json"
 )
 
 println("Starting symbolic regression WITHOUT LLM complexity...")
@@ -84,7 +87,7 @@ options2 = ComplexityOptions(
     populations=num_populations,
     population_size=num_members_per_population, 
     log_complexity_outputs=true, 
-    log_llm_file_path="experimental_results/simple_expression/llm_complexity_log.json"
+    log_llm_file_path="experimental_results/simple_expression/llm_complexity_log_$(timestamp).json"
 )
 
 # Run with LLM complexity enabled
@@ -94,5 +97,5 @@ println("Time taken: $t2 seconds")
 println()
 
 # Write results to JSON file
-output_file = "experimental_results/simple_expression/simple_test_results.json"
+output_file = "experimental_results/simple_expression/simple_test_results_$(timestamp).json"
 write_results_to_json(output_file, t1, t2, num_populations, num_members_per_population, num_iterations)
