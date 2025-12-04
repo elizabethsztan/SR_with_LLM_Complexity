@@ -7,3 +7,10 @@ Manifest.toml
 #testing
 outputs/
 src/retirees/
+
+# HPC logs
+logs
+
+scraps/
+
+CLAUDE.md
