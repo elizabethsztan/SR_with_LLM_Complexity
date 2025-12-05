@@ -69,7 +69,7 @@ options1 = ComplexityOptions(
     populations=num_populations,
     population_size=num_members_per_population, 
     log_complexity_outputs=true, 
-    log_standard_file_path="experimental_results/simple_expression/standard_complexity_log_$(timestamp).json"
+    log_standard_file_path="experimental_results/qwen7b/simple_expression/standard_complexity_log_$(timestamp).json"
 )
 
 println("Starting symbolic regression WITHOUT LLM complexity...")
@@ -97,5 +97,5 @@ println("Time taken: $t2 seconds")
 println()
 
 # Write results to JSON file
-output_file = "experimental_results/simple_expression/simple_test_results_$(timestamp).json"
+output_file = "experimental_results/qwen7b/simple_expression/simple_test_results_$(timestamp).json"
 write_results_to_json(output_file, t1, t2, num_populations, num_members_per_population, num_iterations)

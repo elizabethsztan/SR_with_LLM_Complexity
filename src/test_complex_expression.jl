@@ -86,7 +86,7 @@ options2 = ComplexityOptions(
     populations=num_populations,
     population_size=num_members_per_population, 
     log_complexity_outputs=true, 
-    log_llm_file_path="experimental_results/complex_expression/llm_complexity_log_$(timestamp).json"
+    log_llm_file_path="experimental_results/qwen7b/complex_expression/llm_complexity_log_$(timestamp).json"
 )
 
 # Run with LLM complexity enabled
@@ -96,5 +96,5 @@ println("Time taken: $t2 seconds")
 println()
 
 # Write results to JSON file
-output_file = "experimental_results/complex_expression/complex_test_results_$(timestamp).json"
+output_file = "experimental_results/qwen7b/complex_expression/complex_test_results_$(timestamp).json"
 write_results_to_json(output_file, t1, t2, num_populations, num_members_per_population, num_iterations)
