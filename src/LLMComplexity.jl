@@ -97,7 +97,6 @@ function compute_llm_complexity(expression_tree::AbstractExpression, options)
     # output = response.content
     # complexity = parse(Int64, output)
 
-
     # response = aigenerate(
     #     CustomOpenAISchema(),
     #     conversation;
@@ -113,6 +112,16 @@ function compute_llm_complexity(expression_tree::AbstractExpression, options)
         conversation;
         api_key="local-server",
         model="Qwen2.5-0.5B-Instruct-Q4_K_M",
+        api_kwargs=(url="http://localhost:11449/v1", max_tokens=200, temperature = 0.0),
+        http_kwargs=(retries=3, readtimeout=60)
+    )
+
+    # Use Qwen2.5-7B-Instruct
+    response = aigenerate(
+        CustomOpenAISchema(),
+        conversation;
+        api_key="local-server",
+        model="Qwen2.5-7B-Instruct-1M-llamafile",
         api_kwargs=(url="http://localhost:11449/v1", max_tokens=200, temperature = 0.0),
         http_kwargs=(retries=3, readtimeout=60)
     )

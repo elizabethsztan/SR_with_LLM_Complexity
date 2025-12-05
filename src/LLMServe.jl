@@ -3,17 +3,33 @@ using Downloads
 using Logging
 using Base: dirname, isdir, mkdir, atexit
 
-const LLAMAFILE_MODEL = get(ENV, "LLAMAFILE_MODEL", "Qwen2.5-0.5B-Instruct-Q4_K_M")
+# Qwen2.5-0.5B-Instruct-QK_K_M
+# const LLAMAFILE_MODEL = get(ENV, "LLAMAFILE_MODEL", "Qwen2.5-0.5B-Instruct-Q4_K_M")
+# const LLAMAFILE_PATH = get(
+#     ENV,
+#     "LLAMAFILE_PATH",
+#     abspath(joinpath(@__DIR__, "..", "llamafiles", "Qwen2.5-0.5B-Instruct-Q4_K_M.llamafile")),
+# )
+# const LLAMAFILE_URL = get(
+#     ENV,
+#     "LLAMAFILE_URL",
+#     "https://huggingface.co/Mozilla/Qwen2.5-0.5B-Instruct-llamafile/resolve/main/Qwen2.5-0.5B-Instruct-Q6_K.llamafile",
+# )
+
+# Qwen2.5-7B-Instruct-1M-llamafile
+
+const LLAMAFILE_MODEL = get(ENV, "LLAMAFILE_MODEL", "Qwen2.5-7B-Instruct-1M-llamafile")
 const LLAMAFILE_PATH = get(
     ENV,
     "LLAMAFILE_PATH",
-    abspath(joinpath(@__DIR__, "..", "llamafiles", "Qwen2.5-0.5B-Instruct-Q4_K_M.llamafile")),
+    abspath(joinpath(@__DIR__, "..", "llamafiles", "Qwen2.5-7B-Instruct-1M-Q6_K.llamafile")),
 )
 const LLAMAFILE_URL = get(
     ENV,
     "LLAMAFILE_URL",
-    "https://huggingface.co/Mozilla/Qwen2.5-0.5B-Instruct-llamafile/resolve/main/Qwen2.5-0.5B-Instruct-Q6_K.llamafile",
+    "https://huggingface.co/Mozilla/Qwen2.5-7B-Instruct-1M-llamafile/resolve/main/Qwen2.5-7B-Instruct-1M-Q6_K.llamafile",
 )
+
 const LLM_PORT = parse(Int, get(ENV, "LLM_PORT", "11449"))
 const LLM_FLAGS = get(ENV, "LLM_FLAGS", "--gpu auto")
 
