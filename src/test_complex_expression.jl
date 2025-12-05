@@ -56,7 +56,7 @@ y = 2.7 .* exp.(X[1, :] .- 0.2 .* X[2, :]) .* X[2, :] .+ (1 .- X[1, :]) # y = 2.
 
 num_populations = 1
 num_members_per_population = 20
-num_iterations = 3
+num_iterations = 10
 
 # Test 1: Using ComplexityOptions WITHOUT LLM complexity (should use default)
 println("Test 1: ComplexityOptions with LLM disabled")

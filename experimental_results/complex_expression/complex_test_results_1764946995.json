@@ -1,0 +1,13 @@
+{
+    "test2_with_llm": {
+        "time_seconds": 1093.335680677
+    },
+    "experiment_parameters": {
+        "num_members_per_population": 20,
+        "num_populations": 1,
+        "num_iterations": 10
+    },
+    "test1_without_llm": {
+        "time_seconds": 111.20923482
+    }
+}
