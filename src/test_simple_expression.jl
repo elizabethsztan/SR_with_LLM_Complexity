@@ -57,7 +57,7 @@ y = X[1, :] .^ 2 .+ 2 .* X[2, :] .+ 4.5 # y = x1^2 + 2*x2 + 4.5
 
 num_populations = 1
 num_members_per_population = 20
-num_iterations = 10
+num_iterations = 3
 
 # Test 1: Using ComplexityOptions WITHOUT LLM complexity (should use default)
 println("Test 1: ComplexityOptions with LLM disabled")

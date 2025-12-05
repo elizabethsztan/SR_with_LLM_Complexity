@@ -1,12 +1,8 @@
 """
 LLMComplexity.jl
 
-Extends SymbolicRegression.jl's Complexity module.
 """
 module LLMComplexity
-
-# Opt-out of precompilation to allow method overwriting
-__precompile__(false)
 
 using SymbolicRegression
 using SymbolicRegression: AbstractOptions, AbstractExpression
@@ -22,11 +18,11 @@ const LOG_LOCK = ReentrantLock()
 include("Tools.jl")
 using .Tools: string_tree_llm
 
-# Import to extend (use `import` not `using` when you want to add methods)
-import SymbolicRegression.ComplexityModule: compute_complexity
-
 # Import our ComplexityOptions type
 using ..LLMComplexityOptionsStructModule: ComplexityOptions
+
+# Export the core LLM complexity function for use by the patching module
+export compute_llm_complexity
 
 """
     initialize_log(log_file_path::String)
@@ -102,8 +98,6 @@ function compute_llm_complexity(expression_tree::AbstractExpression, options)
     # complexity = parse(Int64, output)
 
 
-    # Use Qwen2.5-0.5B-Instruct
-
     # response = aigenerate(
     #     CustomOpenAISchema(),
     #     conversation;
@@ -113,7 +107,7 @@ function compute_llm_complexity(expression_tree::AbstractExpression, options)
     #     http_kwargs=(retries=3, readtimeout=60)
     # )
 
-
+    # Use Qwen2.5-0.5B-Instruct
     response = aigenerate(
         CustomOpenAISchema(),
         conversation;
@@ -136,30 +130,6 @@ function compute_llm_complexity(expression_tree::AbstractExpression, options)
     return complexity
 end
 
-# Extends original compute_complexity
-function compute_complexity(
-    tree::AbstractExpression,
-    options::ComplexityOptions;  # Note: ComplexityOptions, not AbstractOptions
-    break_sharing=Val(false)
-)
-    if options.use_llm_complexity
-        # Use LLM-based complexity evaluation
-        return compute_llm_complexity(tree, options)
-    else
-        # Call the original compute_complexity by passing options.sr_options (type Options)
-        # Julia will dispatch to the original SymbolicRegression method because
-        # options.sr_options is type Options, not ComplexityOptions
-        complexity = compute_complexity(tree, options.sr_options; break_sharing=break_sharing)
-
-        # Log standard complexity if enabled
-        if options.log_complexity_outputs
-            log_complexity(complexity, options.log_standard_file_path)
-        end
-
-        return complexity
-    end
-end
-
-end
+end # module LLMComplexity
 
 
