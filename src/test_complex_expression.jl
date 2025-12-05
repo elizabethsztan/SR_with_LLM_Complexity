@@ -72,7 +72,7 @@ options1 = ComplexityOptions(
 )
 
 println("Starting symbolic regression WITHOUT LLM complexity...")
-t1 = @elapsed hall_of_fame1 = equation_search(X, y; niterations=num_iterations, options=options1, run_id="complex_$timestamp")
+t1 = @elapsed hall_of_fame1 = equation_search(X, y; niterations=num_iterations, options=options1, run_id="complex_standard_$timestamp")
 println("Time taken: $t1 seconds")
 println()
 
@@ -91,7 +91,7 @@ options2 = ComplexityOptions(
 
 # Run with LLM complexity enabled
 println("Starting symbolic regression WITH LLM-based complexity...")
-t2 = @elapsed hall_of_fame2 = equation_search(X, y; niterations=num_iterations, options=options2, run_id="complex_$timestamp")
+t2 = @elapsed hall_of_fame2 = equation_search(X, y; niterations=num_iterations, options=options2, run_id="complex_llm_$timestamp")
 println("Time taken: $t2 seconds")
 println()
 
