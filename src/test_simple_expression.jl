@@ -87,7 +87,7 @@ options2 = ComplexityOptions(
     populations=num_populations,
     population_size=num_members_per_population, 
     log_complexity_outputs=true, 
-    log_llm_file_path="experimental_results/simple_expression/llm_complexity_log_$(timestamp).json"
+    log_llm_file_path="experimental_results/qwen7b/simple_expression/llm_complexity_log_$(timestamp).json"
 )
 
 # Run with LLM complexity enabled

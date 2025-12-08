@@ -68,7 +68,7 @@ options1 = ComplexityOptions(
     populations=num_populations,
     population_size=num_members_per_population, 
     log_complexity_outputs=true, 
-    log_standard_file_path="experimental_results/complex_expression/standard_complexity_log_$(timestamp).json"
+    log_standard_file_path="experimental_results/qwen7b/complex_expression/standard_complexity_log_$(timestamp).json"
 )
 
 println("Starting symbolic regression WITHOUT LLM complexity...")
