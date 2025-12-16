@@ -15,13 +15,16 @@ mkdir -p logs
 # Load Julia module (check available versions with: module avail julia)
 module load julia
 
+export JULIA_DEPOT_PATH="/tmp/$USER/julia_depot"
+mkdir -p "$JULIA_DEPOT_PATH"
+
 # Set environment variables
 export LLAMAFILE_MODEL="Qwen2.5-7B-Instruct-1M-Q6_K"
 export LLM_PORT=11449
 export LLM_FLAGS="--gpu auto"
 
 # Number of equations to process (must match generate_equations.jl)
-export NUM_EQUATIONS=100
+export NUM_EQUATIONS=10000
 
 # Use SLURM_SUBMIT_DIR (directory where sbatch was called from)
 # If not set (running locally), fall back to script directory
@@ -132,6 +135,7 @@ echo "Processing $NUM_EQUATIONS equations"
 echo ""
 
 # Run the Julia script with NUM_EQUATIONS as environment variable
+julia --project=. -e 'using Pkg; Pkg.instantiate()'
 julia --project=. experiment0/compute_llm_complexity.jl
 
 TEST1_EXIT=$?
