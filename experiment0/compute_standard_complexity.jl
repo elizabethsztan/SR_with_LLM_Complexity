@@ -18,7 +18,7 @@ using Serialization
 #     const NUM_EQUATIONS = 10  # Must match the number used in generate_equations.jl
 # end
 
-# NUM_EQUATIONS = 100
+NUM_EQUATIONS = 10000
 
 const INPUT_DIR = "experimental_results/experiment0"
 const OUTPUT_DIR = INPUT_DIR
