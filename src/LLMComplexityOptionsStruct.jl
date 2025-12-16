@@ -14,6 +14,7 @@ Base.@kwdef mutable struct LLMComplexityOptions
     # LLM Evaluation Control
     use_llm_complexity::Bool = false
     user_examples::String = "x1 + x2 + C has complexity 3, C * sin(x1) has complexity 4, sin(exp(sin(x1))) has complexity 10"
+    model::String = "Qwen2.5-0.5B-Instruct-Q4_K_M"  # LLM model to use
 
     # Logging options
     log_complexity_outputs::Bool = false
