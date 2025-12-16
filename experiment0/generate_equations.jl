@@ -23,8 +23,8 @@ include("../src/gen_equations.jl")
 # const MAX_ATTEMPTS = max(10000, NUM_EQUATIONS * 150)  # Maximum attempts to generate equations
 const OUTPUT_DIR = "experimental_results/experiment0"
 
-NUM_EQUATIONS = 1000
-MAX_ATTEMPTS = 150000
+NUM_EQUATIONS = 10000
+MAX_ATTEMPTS = 1500000
 
 println("="^60)
 println("Generating Random Equations Dataset")
