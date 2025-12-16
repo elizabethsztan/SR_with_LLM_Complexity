@@ -13,7 +13,19 @@ using Dates
 using Serialization
 
 # Configuration
-const NUM_EQUATIONS = 10  # Must match the number used in generate_equations.jl
+# Use global NUM_EQUATIONS if set by parent script, otherwise use default
+# if !@isdefined(NUM_EQUATIONS)
+#     const NUM_EQUATIONS = 10  # Must match the number used in generate_equations.jl
+# end
+
+# const NUM_EQUATIONS = 100
+
+if haskey(ENV, "LLAMAFILE_MODEL")
+    const LLM_MODEL = ENV["LLAMAFILE_MODEL"]
+else
+    const LLM_MODEL = "Qwen2.5-0.5B-Instruct-Q4_K_M"
+end
+
 const INPUT_DIR = "experimental_results/experiment0"
 const OUTPUT_DIR = INPUT_DIR
 
@@ -39,10 +51,13 @@ equations_data = JSON3.read(read(equations_json_file, String))
 equation_strings = equations_data["equations"]
 timestamp = equations_data["timestamp"]
 
+
+println("\nUsing LLM model: $LLM_MODEL")
+
 # Create ComplexityOptions with LLM enabled
 llm_options = ComplexityOptions(
     use_llm_complexity=true,
-    model="Qwen2.5-0.5B-Instruct-Q4_K_M",  # Change this to switch models
+    model=LLM_MODEL,
     binary_operators=[+, -, *, /],
     unary_operators=[sin, sqrt, exp, log],
     log_complexity_outputs=false  # We'll handle logging manually
@@ -67,7 +82,7 @@ for (i, expr) in enumerate(expressions)
 end
 
 # Save LLM complexity results
-llm_file = joinpath(OUTPUT_DIR, "llm_complexity_$(NUM_EQUATIONS).json")
+llm_file = joinpath(OUTPUT_DIR, "$(llm_options.model)_$(NUM_EQUATIONS).json")
 open(llm_file, "w") do io
     JSON3.write(io, Dict(
         "timestamp" => timestamp,

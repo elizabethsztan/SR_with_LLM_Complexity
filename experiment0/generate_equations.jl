@@ -14,10 +14,17 @@ using Serialization
 # Include the equation generator from src
 include("../src/gen_equations.jl")
 
-# Configuration
-const NUM_EQUATIONS = 10  # Number of random expressions to generate
-const MAX_ATTEMPTS = 10000  # Maximum attempts to generate equations
+# # Configuration
+# # Use global NUM_EQUATIONS if set by parent script, otherwise use default
+# if !@isdefined(NUM_EQUATIONS)
+#     const NUM_EQUATIONS = 10  # Number of random expressions to generate
+# end
+# # Scale MAX_ATTEMPTS based on NUM_EQUATIONS (typically need ~100x attempts per equation)
+# const MAX_ATTEMPTS = max(10000, NUM_EQUATIONS * 150)  # Maximum attempts to generate equations
 const OUTPUT_DIR = "experimental_results/experiment0"
+
+NUM_EQUATIONS = 100
+MAX_ATTEMPTS = 15000
 
 println("="^60)
 println("Generating Random Equations Dataset")
@@ -65,7 +72,3 @@ println("✓ Saved equation strings to: $equations_json_file")
 equations_binary_file = joinpath(OUTPUT_DIR, "equations_$(NUM_EQUATIONS).jls")
 serialize(equations_binary_file, (equations=equations, sr_options=sr_options, sample_X=sample_X))
 println("✓ Saved equation objects to: $equations_binary_file")
-
-println("\nNext steps:")
-println("  1. Run: julia --project=. experiment0/compute_standard_complexity.jl")
-println("  2. Run: julia --project=. experiment0/compute_llm_complexity.jl")

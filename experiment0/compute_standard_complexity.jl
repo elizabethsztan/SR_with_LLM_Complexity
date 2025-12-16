@@ -12,8 +12,14 @@ using JSON3
 using Dates
 using Serialization
 
-# Configuration
-const NUM_EQUATIONS = 10  # Must match the number used in generate_equations.jl
+# # Configuration
+# # Use global NUM_EQUATIONS if set by parent script, otherwise use default
+# if !@isdefined(NUM_EQUATIONS)
+#     const NUM_EQUATIONS = 10  # Must match the number used in generate_equations.jl
+# end
+
+# NUM_EQUATIONS = 100
+
 const INPUT_DIR = "experimental_results/experiment0"
 const OUTPUT_DIR = INPUT_DIR
 
