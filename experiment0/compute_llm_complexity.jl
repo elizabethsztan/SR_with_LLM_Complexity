@@ -20,11 +20,11 @@ using Serialization
 
 # const NUM_EQUATIONS = 100
 
-if haskey(ENV, "LLAMAFILE_MODEL")
-    const LLM_MODEL = ENV["LLAMAFILE_MODEL"]
-else
-    const LLM_MODEL = "Qwen2.5-0.5B-Instruct-Q4_K_M"
-end
+const NUM_EQUATIONS = parse(Int, ENV["NUM_EQUATIONS"])
+
+const LLM_MODEL = get(ENV, "LLAMAFILE_MODEL",
+                      "Qwen2.5-0.5B-Instruct-Q4_K_M")
+
 
 const INPUT_DIR = "experimental_results/experiment0"
 const OUTPUT_DIR = INPUT_DIR
