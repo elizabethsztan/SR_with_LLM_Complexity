@@ -24,6 +24,7 @@ SymbolicRegression.jl options.
 # LLM Complexity Options
 - `use_llm_complexity::Bool=false`: Enable LLM-based complexity evaluation
 - `user_examples::String`: Examples to guide complexity assignment (default: "x1 + x2 + C has complexity 3, C * sin(x1) has complexity 4, sin(sin(sin(x1))) has complexity 10")
+- `model::String`: LLM model to use (default: "Qwen2.5-0.5B-Instruct-Q4_K_M")
 
 # SymbolicRegression.jl Options
 All standard SymbolicRegression.jl options are also supported. See `SymbolicRegression.Options`
@@ -48,6 +49,7 @@ function ComplexityOptions(;
     # LLM Complexity specific options
     use_llm_complexity::Bool=false,
     user_examples::String=LLMComplexityOptions().user_examples,  # Use default from struct
+    model::String=LLMComplexityOptions().model,  # Use default from struct
     log_complexity_outputs::Bool=false,
     log_llm_file_path::String=LLMComplexityOptions().log_llm_file_path,
     log_standard_file_path::String=LLMComplexityOptions().log_standard_file_path,
@@ -58,6 +60,7 @@ function ComplexityOptions(;
     llm_complexity_options = LLMComplexityOptions(
         use_llm_complexity=use_llm_complexity,
         user_examples=user_examples,
+        model=model,
         log_complexity_outputs=log_complexity_outputs,
         log_llm_file_path=log_llm_file_path,
         log_standard_file_path=log_standard_file_path

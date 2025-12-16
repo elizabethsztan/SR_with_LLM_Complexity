@@ -106,22 +106,12 @@ function compute_llm_complexity(expression_tree::AbstractExpression, options)
     #     http_kwargs=(retries=3, readtimeout=60)
     # )
 
-    # Use Qwen2.5-0.5B-Instruct
+    # Use the model specified in options
     response = aigenerate(
         CustomOpenAISchema(),
         conversation;
         api_key="local-server",
-        model="Qwen2.5-0.5B-Instruct-Q4_K_M",
-        api_kwargs=(url="http://localhost:11449/v1", max_tokens=200, temperature = 0.0),
-        http_kwargs=(retries=3, readtimeout=60)
-    )
-
-    # Use Qwen2.5-7B-Instruct
-    response = aigenerate(
-        CustomOpenAISchema(),
-        conversation;
-        api_key="local-server",
-        model="Qwen2.5-7B-Instruct-1M-llamafile",
+        model=options.model,
         api_kwargs=(url="http://localhost:11449/v1", max_tokens=200, temperature = 0.0),
         http_kwargs=(retries=3, readtimeout=60)
     )

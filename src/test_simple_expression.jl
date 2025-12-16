@@ -7,6 +7,8 @@ using Dates
 # Suppress PromptingTools logging (token counts, etc.)
 Logging.disable_logging(Logging.Info)
 
+#TODO: This needs to be updated because we added a new model parameter to ComplexityOptions
+
 timestamp = Int(floor(Dates.datetime2unix(now())))
 
 """
